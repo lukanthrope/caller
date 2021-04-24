@@ -23,7 +23,8 @@ export class AuthService {
 
     const token = jwt.sign({
       user: {
-        _id: exists._id
+        _id: exists._id,
+        about: exists.about
       },
     }, EInfo.SECRET);
 
@@ -47,7 +48,8 @@ export class AuthService {
 
     const token = jwt.sign({
       user: {
-        _id: newUser._id
+        _id: newUser._id,
+        about: newUser.about
       },
     }, EInfo.SECRET);
 

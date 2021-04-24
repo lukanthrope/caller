@@ -7,13 +7,13 @@ class ApiService {
     axios.defaults.headers.common.authorization = `Bearer ${token}`
   }
 
-  get = async (url: string) => axios.get(`${this.baseUrl}${url}`);
+  get = async (url: string) => axios.get(`${this.baseUrl}${url}`)
 
-  post = async (url: string, data = {}) => axios.post(`${this.baseUrl}${url}`, data);
+  post = async (url: string, data = {}) => axios.post(`${this.baseUrl}${url}`, data)
 
-  put = async (url: string, data: any) => axios.put(`${this.baseUrl}${url}`, data);
+  put = async (url: string, data: any) => axios.put(`${this.baseUrl}${url}`, data)
 
-  delete = async (url: string, data: string) => axios.delete(`${this.baseUrl}${url}/${data}`);
+  delete = async (url: string, data: string) => axios.delete(`${this.baseUrl}${url}/${data}`)
 }
 
 export default new ApiService();
