@@ -1,3 +1,4 @@
 export enum ERoutes {
-    Login = '/login'
+  Main = "/",
+  Login = "/login",
 }

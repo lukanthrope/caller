@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 class ApiService {
-  private readonly baseUrl = 'http://localhost:5000'
+  private readonly baseUrl = 'http://localhost:5000/'
 
   setToken = (token: string) => {
     axios.defaults.headers.common.authorization = `Bearer ${token}`

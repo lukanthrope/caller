@@ -2,8 +2,10 @@ import { IUser } from "../../interfaces";
 
 export interface IAuthStore {
     user: IUser | null
+    isLoading: boolean
+    error: string
 
-    signIn(payload: ISignupPayload): Promise<void>
+    signIn(payload: ISigninPayload): Promise<void>
     signUp(payload: ISignupPayload): Promise<void>
 }
 
