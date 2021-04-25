@@ -34,6 +34,7 @@ export const withAuth = (params: { needAuth: boolean } = defaultParams) => <
 
     private checkAuth() {
       const { authStore, history } = this.props;
+      
       if (!authStore?.isLoading && !authStore?.user && params.needAuth) {
         history.push(ERoutes.Login);
       }

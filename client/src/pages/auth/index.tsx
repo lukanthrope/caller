@@ -17,7 +17,7 @@ export class Auth extends React.Component<IProps> {
   private formRef;
 
   @observable
-  private isLogin = false;
+  private isLogin = true;
 
   constructor(props: IProps) {
     super(props);

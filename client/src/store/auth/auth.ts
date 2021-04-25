@@ -59,4 +59,12 @@ export class AuthStore implements IAuthStore {
       this.isLoading = false;
     }
   }
+
+  @action.bound
+  public logout() {
+      this.isLoading = true
+      this.user = null;
+      AuthService.deleteUser()
+      this.isLoading = false
+  }
 }

@@ -15,6 +15,11 @@ class AuthService {
         return null
     }
 
+    public deleteUser(): void {
+        localStorage.removeItem('token')
+        ApiService.dropToken()
+    }
+
     public setToken(token: string): void {
         localStorage.setItem('token', token)
         this.saveToken(token)

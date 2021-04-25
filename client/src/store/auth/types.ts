@@ -7,6 +7,7 @@ export interface IAuthStore {
 
     signIn(payload: ISigninPayload): Promise<void>
     signUp(payload: ISignupPayload): Promise<void>
+    logout(): void
 }
 
 export interface ISignupPayload {

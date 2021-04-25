@@ -7,6 +7,10 @@ class ApiService {
     axios.defaults.headers.common.authorization = `Bearer ${token}`
   }
 
+  dropToken = () => {
+    axios.defaults.headers.common.authorization = ''
+  }
+
   get = async (url: string) => axios.get(`${this.baseUrl}${url}`)
 
   post = async (url: string, data = {}) => axios.post(`${this.baseUrl}${url}`, data)
