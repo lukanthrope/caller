@@ -1,5 +1,4 @@
 import { Space, Spin } from "antd";
-import { when } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
 import { withRouter, RouteComponentProps } from "react-router";
@@ -29,9 +28,8 @@ export const withAuth = (params: { needAuth: boolean } = defaultParams) => <
       this.checkAuth();
     }
 
-    public componentDidUpdate(_: unknown, prevProps: P & IWithAuthProps) {
+    public componentDidUpdate() {
       this.checkAuth();
-      console.log(this.props.authStore);
     }
 
     private checkAuth() {

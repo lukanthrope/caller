@@ -1,11 +1,11 @@
 import React from "react";
 import { Form, Input, Button, Layout, Typography } from "antd";
 import { FormInstance } from "antd/lib/form";
+import { observer } from "mobx-react";
+import { observable } from "mobx";
 import { IAuthStore } from "../../store/auth";
 import { withAuth } from "../../HOCs/auth";
 import Grid from "antd/lib/card/Grid";
-import { observer } from "mobx-react";
-import { observable } from "mobx";
 
 interface IProps {
   authStore?: IAuthStore;

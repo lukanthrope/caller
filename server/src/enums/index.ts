@@ -2,4 +2,4 @@ export enum EInfo {
   SECRET = 'SECRET_CODE_2312'
 }
 
-export * from './services.enum'
+export * from './message-types.enum'

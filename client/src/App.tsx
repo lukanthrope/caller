@@ -6,7 +6,7 @@ import {
   Link
 } from 'react-router-dom'
 import { ERoutes } from './enums'
-import { Auth, NotFound } from './pages'
+import { Auth, NotFound, Chat } from './pages'
 import logo from './logo.svg';
 import './App.css';
 
@@ -17,6 +17,9 @@ class App extends React.Component {
         <Switch>
           <Route path={ERoutes.Login}>
             <Auth />
+          </Route>
+          <Route path={ERoutes.Main}>
+            <Chat />
           </Route>
           <Route path="*">
             <NotFound />

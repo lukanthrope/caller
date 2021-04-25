@@ -6,10 +6,10 @@ export class User {
   _id: string;
 
   @Prop()
-  password: string;
+  password?: string;
 
   @Prop()
-  email: string;
+  email?: string;
 
   @Prop({ required: false })
   about: string;
