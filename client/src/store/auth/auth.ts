@@ -44,7 +44,7 @@ export class AuthStore implements IAuthStore {
   @action.bound
   public async signUp(payload: ISignupPayload) {
     this.isLoading = true;
-    console.log("sss");
+
     try {
       const { data } = await ApiService.post("auth/signup", payload);
 

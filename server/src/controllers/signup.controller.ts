@@ -14,15 +14,17 @@ export class AuthController {
   public async SignUp(@Res() res, @Body() body: CreateUserDTO) {
     const serviceResponse = await this.authService.SignUp(body);
 
-    return res.status(serviceResponse.error ? HttpStatus.BAD_REQUEST : HttpStatus.OK)
-      .json(serviceResponse); 
+    return res
+      .status(serviceResponse.error ? HttpStatus.BAD_REQUEST : HttpStatus.OK)
+      .json(serviceResponse);
   }
 
   @Post('/signin')
   public async SignIn(@Res() res, @Body() body: LoginDTO) {
     const serviceResponse = await this.authService.SignIn(body);
 
-    return res.status(serviceResponse.error ? HttpStatus.BAD_REQUEST : HttpStatus.OK)
+    return res
+      .status(serviceResponse.error ? HttpStatus.BAD_REQUEST : HttpStatus.OK)
       .json(serviceResponse);
   }
 }
