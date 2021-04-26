@@ -58,7 +58,6 @@ export class Auth extends React.Component<IProps> {
               <Form.Item
                 name="about"
                 label="about"
-                rules={[{ required: true }]}
               >
                 <Input />
               </Form.Item>

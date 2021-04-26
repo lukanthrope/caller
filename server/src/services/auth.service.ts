@@ -36,7 +36,7 @@ export class AuthService {
   public async SignUp(userDTO: CreateUserDTO) {
     const exists = await this.userModel.find({ $or: [
       { email: userDTO.email },
-      { _id: userDTO.id }
+      { _id: userDTO._id }
     ] });
 
     Logger.warn(exists);
@@ -44,7 +44,7 @@ export class AuthService {
       error: 'user exists'
     }
 
-    const newUser = await this.userModel.create(userDTO);
+    const newUser = await this.userModel.create({...userDTO, _id: `@${userDTO._id}`});
 
     const token = jwt.sign({
       user: {

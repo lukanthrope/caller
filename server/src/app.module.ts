@@ -1,11 +1,8 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthGuard } from './guards';
-import { AuthModule } from './modules';
-import { ChatsModule } from './modules/chat.module';
+import { AuthModule, UsersModule, ChatsModule } from './modules';
 
 @Module({
   imports: [
@@ -13,6 +10,7 @@ import { ChatsModule } from './modules/chat.module';
       useNewUrlParser: true,
     }),
     AuthModule,
+    UsersModule,
     ChatsModule,
   ],
   controllers: [AppController],

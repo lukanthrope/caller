@@ -5,4 +5,5 @@ export interface User extends Document {
   password: string;
   email: string;
   about?: string;
+  isOnline?: boolean
 }

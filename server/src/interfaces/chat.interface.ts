@@ -1,9 +1,13 @@
+import { Document } from 'mongoose';
 import { IMessage } from './message.interface';
+import { User } from './user.interface';
 
-export interface IChat {
+export interface IChat extends Document {
   _id: string;
 
   title?: string;
 
-  lastMessage?: IMessage;
+  messages?: IMessage[];
+
+  users: User[];
 }

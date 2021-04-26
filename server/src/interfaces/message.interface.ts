@@ -1,12 +1,15 @@
+import { Document } from 'mongoose';
 import { EMessageType } from 'src/enums';
-import { IChat } from './chat.interface';
+import { User } from 'src/models';
 
-export interface IMessage {
+export interface IMessage extends Document {
   _id: string;
 
   type: EMessageType;
 
   content: string;
 
-  chat?: IChat;
+  createdAt: Date;
+
+  sender: User;
 }

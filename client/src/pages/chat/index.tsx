@@ -19,35 +19,73 @@ import {
 } from "@chatscope/chat-ui-kit-react";
 import { withAuth } from "../../HOCs/auth";
 import { IAuthStore } from "../../store/auth";
-import { RouteComponentProps } from "react-router";
-import { ERoutes } from "../../enums";
+import { inject, observer } from "mobx-react";
+import { observable } from "mobx";
+import { IUsersStore } from "../../store/users";
 
 interface IProps {
   authStore?: IAuthStore;
+  usersStore?: IUsersStore;
 }
 
 @(withAuth() as any)
+@inject("usersStore")
+@observer
 export class Chat extends React.Component<IProps> {
+  @observable
+  private search = "";
+
   constructor(props: IProps) {
     super(props);
   }
 
-  private handleLogout = () => {
-    const { authStore } = this.props
-    authStore?.logout()
+  public componentDidUpdate() {
+    const { usersStore } = this.props;
+    if (this.search.trim() !== "") {
+      usersStore?.fetchUsers(this.search);
+    } else {
+      if (usersStore?.users.length !== 0) usersStore?.clearUsers();
+    }
   }
 
-  render(): JSX.Element {
-    const { authStore } = this.props
+  private handleSearch = (value: string) => {
+    this.search = value;
+  };
+
+  private clearSearch = () => {
+    this.search = "";
+  };
+
+  private renderSearchResult = () => {
+    const { usersStore } = this.props;
+    if (usersStore?.users)
+      return usersStore.users.map((usr) => (
+        <Conversation name={usr._id} key={usr._id}>
+          <Avatar src="https://picsum.photos/200" name={usr._id} />
+        </Conversation>
+      ));
+  };
+
+  public render(): JSX.Element {
+    const { authStore } = this.props;
     return (
       <div style={{ position: "relative", height: "550px" }}>
         <MainContainer>
           <Sidebar position="left">
-            <h2>{authStore?.user?._id}</h2>
-            <Search placeholder="Search..." />
+            <ConversationHeader>
+              <Avatar src="https://picsum.photos/200/" name="Emily" />
+              <ConversationHeader.Content userName={authStore?.user?._id} />
+            </ConversationHeader>
+            <Search
+              placeholder="Search..."
+              value={this.search}
+              onChange={this.handleSearch}
+              onClearClick={this.clearSearch}
+            />
             <Button border onClick={() => authStore?.logout()}>
               Logout
             </Button>
+            {this.renderSearchResult()}
           </Sidebar>
           <ChatContainer>
             <ConversationHeader>

@@ -10,7 +10,7 @@ export class LoginDTO {
 
 export class CreateUserDTO extends LoginDTO {
   @IsNotEmpty()
-  public readonly id: string;
+  public readonly _id: string;
 
   @IsNotEmpty()
   public readonly about: string;

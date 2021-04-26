@@ -11,7 +11,7 @@ class ApiService {
     axios.defaults.headers.common.authorization = ''
   }
 
-  get = async (url: string) => axios.get(`${this.baseUrl}${url}`)
+  get = async (url: string, data?: any) => axios.get(`${this.baseUrl}${url}`, data)
 
   post = async (url: string, data = {}) => axios.post(`${this.baseUrl}${url}`, data)
 
