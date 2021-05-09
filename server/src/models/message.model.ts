@@ -11,8 +11,11 @@ export class Message {
   @Prop()
   content: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
-  sender: User;
+  @Prop()
+  senderId: string;
+
+  @Prop({ type: String, ref: 'Chat' })
+  chatId: string;
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);

@@ -11,5 +11,7 @@ export interface IMessage extends Document {
 
   createdAt: Date;
 
-  sender: User;
+  senderId: string;
+
+  chatId: string;
 }

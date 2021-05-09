@@ -1,12 +1,16 @@
 import { action, observable } from "mobx";
 import ApiService from "../../services/api";
-import { IUser } from "../../interfaces";
+import { IChat, IUser } from "../../interfaces";
 import { IChatsStore } from "./types";
 import { Store } from "../root";
+import { EMessageType } from "../../enums";
 
 export class ChatsStore implements IChatsStore {
   @observable
-  public users: IUser[] = [];
+  public chats: IChat[] = [];
+
+  @observable
+  public currentChat: IChat | null = null;
 
   @observable
   public isLoading: boolean = false;
@@ -15,9 +19,6 @@ export class ChatsStore implements IChatsStore {
 
   constructor(root: Store) {
     this.root = root;
-
-    this.fetchChats()
-    console.log('fetched')
   }
 
   @action.bound
@@ -25,11 +26,11 @@ export class ChatsStore implements IChatsStore {
     this.isLoading = true;
 
     try {
-      const { data } = await ApiService.get("users", {
+      const { data } = await ApiService.get("chats", {
         params: { userId: this.root.authStore.user?._id },
       });
 
-      this.users = data;
+      this.chats = data;
     } catch (e) {
       console.log(e);
     } finally {
@@ -41,11 +42,38 @@ export class ChatsStore implements IChatsStore {
     //return this.chatsService.create(dto.userIds)
   }
 
-  public async fetchChat() {
-    // return this.chatsService.getChat(params.chatId)
+  @action.bound
+  public async fetchChat(chatId: string) {
+    this.isLoading = true;
+
+    try {
+      const { data } = await ApiService.get(`chats/${chatId}`);
+      console.log(data);
+      this.currentChat = data;
+    } catch (e) {
+      console.log(e);
+    } finally {
+      this.isLoading = false;
+    }
   }
 
-  public async sendMessage() {
-    //return this.chatsService.sendMessage(dto)
+  @action.bound
+  public async sendMessage(type: EMessageType, content: string) {
+    this.isLoading = true;
+
+    try {
+      const { data } = await ApiService.post("chats/send-message", {
+        type,
+        content,
+        senderId: this.root?.authStore?.user?._id,
+        chatId: this.currentChat?._id,
+      });
+
+      this.currentChat?.messages?.push(data);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      this.isLoading = false;
+    }
   }
 }

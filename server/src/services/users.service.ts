@@ -19,4 +19,8 @@ export class UsersService {
 
     return exists.map((usr) => ({ _id: usr._id, about: usr.about }));
   }
+
+  public async getOne(_id: string): Promise<IClient> {
+    return this.userModel.findOne({ _id });
+  }
 }

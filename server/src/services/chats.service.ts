@@ -24,26 +24,22 @@ export class ChatsService {
   }
 
   public async getChat(chatId: string) {
-    return this.chatModel.findOne({ _id: chatId });
+    const chat = await this.chatModel.findOne({ _id: chatId });
+
+    chat.messages = await this.messageModel.find({ chatId });
+    console.log(chat.messages);
+
+    return chat;
   }
 
   public async getChatList(userId: string) {
-    const user = await this.userModel.findOne({ _id: userId });
     // @ts-ignore
-    const chats = await this.chatModel.find({ "users": userId });
+    const chats = await this.chatModel.find({ users: userId });
 
-    console.log(chats[0].messages[0].content)
-    return chats
+    return chats;
   }
 
   public async sendMessage(m: CreateMessageDTO) {
-    const { chatId } = m;
-    const message = await this.messageModel.create(m);
-    await this.chatModel.updateOne(
-      { _id: chatId },
-      { $push: { messages: message } },
-    );
-
-    return message;
+    return this.messageModel.create(m);
   }
 }

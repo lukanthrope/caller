@@ -11,5 +11,5 @@ export interface IMessage {
 
   createdAt: Date;
 
-  sender: IUser;
+  senderId: string;
 }
