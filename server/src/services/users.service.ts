@@ -10,7 +10,10 @@ export class UsersService {
   public async getList(_id: string): Promise<IClient[]> {
     const exists = await this.userModel.find(
       {
-        _id: { $regex: `${_id || ''}`, $options: 'i' },
+        $or: [
+          { _id: { $regex: `${_id || ''}`, $options: 'i' }, },
+          { about: { $regex: `${_id || ''}`, $options: 'i' }, }
+        ],
       },
       (err) => {
         if (err) console.log(err);

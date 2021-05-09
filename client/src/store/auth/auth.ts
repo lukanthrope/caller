@@ -3,6 +3,7 @@ import ApiService from "../../services/api";
 import AuthService from "../../services/auth";
 import { IUser } from "../../interfaces";
 import { IAuthStore, ISigninPayload, ISignupPayload } from "./types";
+import { Store } from "rc-field-form/lib/interface";
 
 export class AuthStore implements IAuthStore {
   @observable
@@ -14,9 +15,12 @@ export class AuthStore implements IAuthStore {
   @observable
   public error: string = "";
 
-  constructor() {
+  private root: Store;
+
+  constructor(store: Store) {
     this.user = AuthService.getUser();
     this.isLoading = false;
+    this.root = store;
   }
 
   @action
@@ -65,6 +69,7 @@ export class AuthStore implements IAuthStore {
       this.isLoading = true
       this.user = null;
       AuthService.deleteUser()
+      this.root.chatsStore.clearStore();
       this.isLoading = false
   }
 }

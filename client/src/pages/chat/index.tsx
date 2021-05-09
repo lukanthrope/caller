@@ -145,7 +145,7 @@ export class Chat extends React.Component<IProps> {
               <ConversationHeader.Content userName={authStore?.user?._id} />
             </ConversationHeader>
             <Search
-              placeholder="Search..."
+              placeholder="Search by interests or ID.."
               value={this.search}
               onChange={this.handleSearch}
               onClearClick={this.clearSearch}

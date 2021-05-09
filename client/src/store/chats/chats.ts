@@ -15,10 +15,16 @@ export class ChatsStore implements IChatsStore {
   @observable
   public isLoading: boolean = false;
 
-  root: Store;
+  private root: Store;
 
   constructor(root: Store) {
     this.root = root;
+  }
+
+  @action.bound
+  public clearStore() {
+    this.chats = [];
+    this.currentChat = null;
   }
 
   @action.bound

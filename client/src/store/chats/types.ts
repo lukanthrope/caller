@@ -8,4 +8,5 @@ export interface IChatsStore {
   fetchChats(): Promise<void>;
   fetchChat(chatId: string): Promise<void>;
   sendMessage(type: EMessageType, content: string): Promise<void>;
+  clearStore(): void;
 }

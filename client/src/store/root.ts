@@ -8,7 +8,7 @@ export class Store {
   public chatsStore: IChatsStore;
 
   constructor() {
-    this.authStore = new AuthStore();
+    this.authStore = new AuthStore(this);
     this.usersStore = new UsersStore();
     this.chatsStore = new ChatsStore(this);
   }
