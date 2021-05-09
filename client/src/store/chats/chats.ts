@@ -44,8 +44,25 @@ export class ChatsStore implements IChatsStore {
     }
   }
 
-  public async createChat() {
-    //return this.chatsService.create(dto.userIds)
+  @action.bound
+  public async createChat(userIds: string[]) {
+    this.isLoading = true;
+
+    try {
+      const { authStore } = this.root;
+      if (authStore.user) userIds.push(authStore.user?._id);
+
+      const { data } = await ApiService.post("chats/create", { userIds });
+
+      data.users = data.users.map((usr: IUser) => usr._id);
+
+      this.currentChat = data;
+      this.chats.unshift(data);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      this.isLoading = false;
+    }
   }
 
   @action.bound

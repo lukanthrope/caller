@@ -24,6 +24,7 @@ import { observable } from "mobx";
 import { IUsersStore } from "../../store/users";
 import { IChatsStore } from "../../store/chats";
 import { EMessageType } from "../../enums";
+import { IChat } from "../../interfaces";
 
 interface IProps {
   authStore?: IAuthStore;
@@ -45,7 +46,7 @@ export class Chat extends React.Component<IProps> {
     super(props);
   }
 
-  public async componentDidMount() {
+  public componentDidMount() {
     this.props.chatsStore?.fetchChats();
   }
 
@@ -74,10 +75,17 @@ export class Chat extends React.Component<IProps> {
   };
 
   private renderSideBarItems = () => {
-    const { usersStore, chatsStore, authStore } = this.props;
+    const { usersStore, chatsStore } = this.props;
     if (usersStore?.users && usersStore.users.length > 0)
       return usersStore.users.map((usr) => (
-        <Conversation name={usr._id} key={usr._id}>
+        <Conversation
+          onClick={() => {
+            chatsStore?.createChat([usr._id]);
+            this.clearSearch();
+          }}
+          name={usr._id}
+          key={usr._id}
+        >
           <Avatar src="https://picsum.photos/200" name={usr._id} />
         </Conversation>
       ));
@@ -85,7 +93,7 @@ export class Chat extends React.Component<IProps> {
     return chatsStore?.chats.map((chat) => (
       <Conversation
         onClick={() => chatsStore.fetchChat(chat._id)}
-        name={chat._id}
+        name={this.getNotMe(chat)}
         key={chat._id}
       >
         <Avatar src="https://picsum.photos/200" name={chat._id} />
@@ -93,19 +101,39 @@ export class Chat extends React.Component<IProps> {
     ));
   };
 
+  private getNotMe = (chat: IChat) => {
+    const { authStore } = this.props;
+
+    if (chat.users[0] !== authStore?.user?._id) return chat.users[0];
+
+    return chat.users[1];
+  };
+
+  private renderChatHeader = () => {
+    const { chatsStore } = this.props;
+
+    if (chatsStore?.currentChat && chatsStore.currentChat.users.length < 3) {
+      const user = this.getNotMe(chatsStore.currentChat);
+
+      return (
+        <ConversationHeader>
+          <Avatar src="https://picsum.photos/200" name={user} />
+          <ConversationHeader.Content userName={user} />
+          <ConversationHeader.Actions>
+            <VideoCallButton />
+            <InfoButton />
+          </ConversationHeader.Actions>
+        </ConversationHeader>
+      );
+    }
+  };
+
   private renderChatBody(): JSX.Element | void {
     const { chatsStore, authStore } = this.props;
     if (chatsStore?.currentChat)
       return (
         <ChatContainer>
-          <ConversationHeader>
-            <Avatar src="https://picsum.photos/200" name="Emily" />
-            <ConversationHeader.Content userName="Emily" />
-            <ConversationHeader.Actions>
-              <VideoCallButton />
-              <InfoButton />
-            </ConversationHeader.Actions>
-          </ConversationHeader>
+          {this.renderChatHeader()}
           <MessageList>
             {chatsStore?.currentChat?.messages?.map((message) => (
               <Message
@@ -120,7 +148,9 @@ export class Chat extends React.Component<IProps> {
                       : null,
                 }}
               >
-                <Avatar src="https://picsum.photos/200" name="Joe" />
+                {authStore?.user?._id !== message.senderId && (
+                  <Avatar src="https://picsum.photos/200" name="Joe" />
+                )}
                 <Message.Footer sender="Emily" sentTime="just now" />
               </Message>
             ))}

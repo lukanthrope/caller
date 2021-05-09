@@ -1,5 +1,4 @@
 import { IMessage } from "./message.interface";
-import { IUser } from "./user.interface";
 
 export interface IChat {
   _id: string;
@@ -8,5 +7,5 @@ export interface IChat {
 
   messages?: IMessage[];
 
-  users: IUser[];
+  users: string[];
 }
