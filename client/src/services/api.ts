@@ -13,7 +13,7 @@ class ApiService {
 
   get = async (url: string, data?: any) => axios.get(`${this.baseUrl}${url}`, data)
 
-  post = async (url: string, data = {}) => axios.post(`${this.baseUrl}${url}`, data)
+  post = async (url: string, data = {}, params?: any) => axios.post(`${this.baseUrl}${url}`, data, params)
 
   put = async (url: string, data: any) => axios.put(`${this.baseUrl}${url}`, data)
 

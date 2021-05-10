@@ -4,6 +4,7 @@ import { IChat, IUser } from "../../interfaces";
 import { IChatsStore } from "./types";
 import { Store } from "../root";
 import { EMessageType } from "../../enums";
+import { IFile } from "../../interfaces/file.interface";
 
 export class ChatsStore implements IChatsStore {
   @observable
@@ -81,16 +82,43 @@ export class ChatsStore implements IChatsStore {
   }
 
   @action.bound
-  public async sendMessage(type: EMessageType, content: string) {
+  public async sendMessage(content: string) {
     this.isLoading = true;
 
     try {
       const { data } = await ApiService.post("chats/send-message", {
-        type,
+        type: EMessageType.Text,
         content,
         senderId: this.root?.authStore?.user?._id,
         chatId: this.currentChat?._id,
       });
+
+      this.currentChat?.messages?.push(data);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+  @action.bound
+  public async sendImageMessage(image: IFile) {
+    this.isLoading = true;
+
+    try {
+      const formData = new FormData();
+      formData.append("image", image as any);
+
+      const { data } = await ApiService.post(
+        "chats/send-image-message",
+        formData,
+        {
+          params: {
+            type: EMessageType.Image,
+            senderId: this.root?.authStore?.user?._id,
+            chatId: this.currentChat?._id,
+          },
+        }
+      );
 
       this.currentChat?.messages?.push(data);
     } catch (e) {

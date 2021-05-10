@@ -8,7 +8,6 @@ export class CreateMessageDTO {
   @IsNotEmpty()
   type: EMessageType;
 
-  @IsNotEmpty()
   content: string;
 
   @IsNotEmpty()

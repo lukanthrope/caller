@@ -4,6 +4,7 @@ export enum ERoutes {
 }
 
 export enum EMessageType {
-  Text = 'text',
-  System = 'system',
+  Text = "text",
+  System = "system",
+  Image = "image",
 }

@@ -1,5 +1,5 @@
-import { EMessageType } from "../../enums";
 import { IChat } from "../../interfaces";
+import { IFile } from "../../interfaces/file.interface";
 
 export interface IChatsStore {
   chats: IChat[];
@@ -11,7 +11,8 @@ export interface IChatsStore {
   fetchChat(chatId: string): Promise<void>;
   createChat(userIds: string[]): Promise<void>;
 
-  sendMessage(type: EMessageType, content: string): Promise<void>;
+  sendMessage(content: string): Promise<void>;
+  sendImageMessage(image: IFile): Promise<void>;
 
   clearStore(): void;
 }

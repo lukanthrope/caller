@@ -42,6 +42,8 @@ export class Chat extends React.Component<IProps> {
   @observable
   private messageInputText = "";
 
+  // TODO: file input ref
+
   constructor(props: IProps) {
     super(props);
   }
@@ -71,7 +73,7 @@ export class Chat extends React.Component<IProps> {
     const { messageInputText, props } = this;
 
     if (messageInputText.trim() !== "")
-      props.chatsStore?.sendMessage(EMessageType.Text, messageInputText);
+      props.chatsStore?.sendMessage(messageInputText);
   };
 
   private renderSideBarItems = () => {
@@ -156,6 +158,7 @@ export class Chat extends React.Component<IProps> {
             ))}
           </MessageList>
           <MessageInput
+            onAttachClick={() => console.log('AAAT')}
             onChange={(t: string) => (this.messageInputText = t)}
             onSend={this.handleSendMessage}
             placeholder="Type message here"
