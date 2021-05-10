@@ -1,11 +1,10 @@
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
-import React from "react";
+import React, { LegacyRef } from "react";
 
 import {
   MainContainer,
   ChatContainer,
   MessageList,
-  Message,
   MessageInput,
   Avatar,
   Conversation,
@@ -23,8 +22,9 @@ import { inject, observer } from "mobx-react";
 import { observable } from "mobx";
 import { IUsersStore } from "../../store/users";
 import { IChatsStore } from "../../store/chats";
-import { EMessageType } from "../../enums";
 import { IChat } from "../../interfaces";
+import { InvisibleFileInput } from "../../components";
+import { MessageComponent } from "./components";
 
 interface IProps {
   authStore?: IAuthStore;
@@ -42,7 +42,7 @@ export class Chat extends React.Component<IProps> {
   @observable
   private messageInputText = "";
 
-  // TODO: file input ref
+  private fileRef: any = React.createRef();
 
   constructor(props: IProps) {
     super(props);
@@ -53,6 +53,7 @@ export class Chat extends React.Component<IProps> {
   }
 
   public componentDidUpdate() {
+    console.log(this.fileRef.current.files);
     const { usersStore } = this.props;
     if (this.search.trim() !== "") {
       usersStore?.fetchUsers(this.search);
@@ -74,6 +75,15 @@ export class Chat extends React.Component<IProps> {
 
     if (messageInputText.trim() !== "")
       props.chatsStore?.sendMessage(messageInputText);
+  };
+
+  private handleSendImageMessage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { chatsStore } = this.props;
+    const { files } = e.target;
+
+    if (files && files.length > 0) {
+      chatsStore?.sendImageMessage(files[0]);
+    }
   };
 
   private renderSideBarItems = () => {
@@ -138,27 +148,14 @@ export class Chat extends React.Component<IProps> {
           {this.renderChatHeader()}
           <MessageList>
             {chatsStore?.currentChat?.messages?.map((message) => (
-              <Message
-                key={message._id}
-                model={{
-                  message: message.content,
-                  sentTime: message.createdAt,
-                  sender: "Joe",
-                  direction:
-                    authStore?.user?._id === message.senderId
-                      ? "outgoing"
-                      : null,
-                }}
-              >
-                {authStore?.user?._id !== message.senderId && (
-                  <Avatar src="https://picsum.photos/200" name="Joe" />
-                )}
-                <Message.Footer sender="Emily" sentTime="just now" />
-              </Message>
+              <MessageComponent
+                isMe={authStore?.user?._id !== message.senderId}
+                message={message}
+              />
             ))}
           </MessageList>
           <MessageInput
-            onAttachClick={() => console.log('AAAT')}
+            onAttachClick={() => this.fileRef.current.click()}
             onChange={(t: string) => (this.messageInputText = t)}
             onSend={this.handleSendMessage}
             placeholder="Type message here"
@@ -171,6 +168,10 @@ export class Chat extends React.Component<IProps> {
     const { authStore } = this.props;
     return (
       <div style={{ position: "relative", height: "550px" }}>
+        <InvisibleFileInput
+          handleChange={this.handleSendImageMessage}
+          ref={this.fileRef}
+        />
         <MainContainer>
           <Sidebar position="left">
             <ConversationHeader>

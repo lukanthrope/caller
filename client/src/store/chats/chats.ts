@@ -4,7 +4,6 @@ import { IChat, IUser } from "../../interfaces";
 import { IChatsStore } from "./types";
 import { Store } from "../root";
 import { EMessageType } from "../../enums";
-import { IFile } from "../../interfaces/file.interface";
 
 export class ChatsStore implements IChatsStore {
   @observable
@@ -101,7 +100,7 @@ export class ChatsStore implements IChatsStore {
     }
   }
   @action.bound
-  public async sendImageMessage(image: IFile) {
+  public async sendImageMessage(image: File) {
     this.isLoading = true;
 
     try {

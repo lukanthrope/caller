@@ -1,5 +1,4 @@
 import { IChat } from "../../interfaces";
-import { IFile } from "../../interfaces/file.interface";
 
 export interface IChatsStore {
   chats: IChat[];
@@ -12,7 +11,7 @@ export interface IChatsStore {
   createChat(userIds: string[]): Promise<void>;
 
   sendMessage(content: string): Promise<void>;
-  sendImageMessage(image: IFile): Promise<void>;
+  sendImageMessage(image: File): Promise<void>;
 
   clearStore(): void;
 }
