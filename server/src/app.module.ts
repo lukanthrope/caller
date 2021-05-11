@@ -5,6 +5,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AppGateway } from './app.gateway';
 import { AuthModule, UsersModule, ChatsModule } from './modules';
 
 @Module({
@@ -23,6 +24,6 @@ import { AuthModule, UsersModule, ChatsModule } from './modules';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AppGateway],
 })
 export class AppModule {}
