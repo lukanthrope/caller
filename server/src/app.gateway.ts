@@ -19,12 +19,9 @@ export class AppGateway
   private logger: Logger = new Logger('AppGateway');
 
   @OnEvent(EEventTypes.MessageCreated)
-  handleMessage(
-    payload: { chat: IChat; message: IMessage },
-  ): void {
-    console.log(payload, 'PP', this.server);
+  handleMessage(payload: { chat: IChat; message: IMessage }): void {
     payload.chat.users.map((user) => {
-        console.log(user)
+      console.log(user);
       this.server.to(`user-${user}`).emit('new-message', payload);
     });
   }
@@ -33,6 +30,30 @@ export class AppGateway
   handleClientConnect(client: Socket, payload: string) {
     this.logger.log(`CLIENT ${payload}`);
     client.join(`user-${payload}`);
+  }
+
+  @SubscribeMessage('call-user')
+  handleCallMade(client: Socket, payload: any) {
+    this.server.to(`user-${payload.to}`).emit('call-made', {
+      offer: payload.offer,
+      userId: payload.from,
+    });
+  }
+
+  @SubscribeMessage('make-answer')
+  handleAnswerMade(client: Socket, payload: any) {
+    this.server.to(`user-${payload.to}`).emit('answer-made', {
+      offer: payload.answer,
+      userId: payload.from,
+    });
+  }
+
+  @SubscribeMessage('reject-call')
+  handleRejectCall(client: Socket, payload: any) {
+    this.server.to(`user-${payload.to}`).emit('call-rejected', {
+      offer: payload.answer,
+      userId: payload.from,
+    });
   }
 
   afterInit(server: Server) {

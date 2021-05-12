@@ -1,8 +1,8 @@
-import IO, { Socket } from "socket.io-client";
+import IO from "socket.io-client";
 
 class WsService {
-  // @ts-ignore
-  private socket: Socket;
+  private socket: any;
+
   constructor() {
     this.init();
   }
