@@ -36,6 +36,7 @@ export class AuthStore implements IAuthStore {
 
       AuthService.setToken(data.token);
       this.user = AuthService.getUser();
+
       this.clearErrors();
     } catch (e) {
       console.log(e);
@@ -66,10 +67,10 @@ export class AuthStore implements IAuthStore {
 
   @action.bound
   public logout() {
-      this.isLoading = true
-      this.user = null;
-      AuthService.deleteUser()
-      this.root.chatsStore.clearStore();
-      this.isLoading = false
+    this.isLoading = true;
+    this.user = null;
+    AuthService.deleteUser();
+    this.root.chatsStore.clearStore();
+    this.isLoading = false;
   }
 }

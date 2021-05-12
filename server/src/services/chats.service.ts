@@ -1,8 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { EventEmitter2 } from 'eventemitter2';
 import * as mongoose from 'mongoose';
 import { FilterQuery, Model } from 'mongoose';
 import { CreateMessageDTO } from 'src/dto';
+import { EEventTypes } from 'src/enums';
 import { IClient, User, IChat, IMessage } from '../interfaces';
 
 @Injectable()
@@ -11,6 +13,7 @@ export class ChatsService {
     @InjectModel('Chat') private chatModel: Model<IChat>,
     @InjectModel('Message') private messageModel: Model<IMessage>,
     @InjectModel('User') private userModel: Model<User>,
+    private eventEmmiter: EventEmitter2,
   ) {}
 
   public async create(userIds: string[]) {
@@ -27,7 +30,6 @@ export class ChatsService {
     const chat = await this.chatModel.findOne({ _id: chatId });
 
     chat.messages = await this.messageModel.find({ chatId });
-    console.log(chat.messages);
 
     return chat;
   }
@@ -40,6 +42,13 @@ export class ChatsService {
   }
 
   public async sendMessage(m: CreateMessageDTO) {
-    return this.messageModel.create(m);
+    const message = await this.messageModel.create(m);
+    const chat = await this.getChat(m.chatId);
+
+    console.log(chat)
+
+    this.eventEmmiter.emit(EEventTypes.MessageCreated, { chat, message });
+
+    return message;
   }
 }
