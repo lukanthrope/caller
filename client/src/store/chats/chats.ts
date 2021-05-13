@@ -14,6 +14,9 @@ export class ChatsStore implements IChatsStore {
   public currentChat: IChat | null = null;
 
   @observable
+  public error = "";
+
+  @observable
   public isLoading: boolean = false;
 
   private root: Store;
@@ -37,14 +40,7 @@ export class ChatsStore implements IChatsStore {
         params: { userId: this.root.authStore.user?._id },
       });
 
-      if (this.root.authStore.user) {
-        SocketService.handleConnection(this.root.authStore.user._id);
-        SocketService.on("new-message", (data: any) => {
-          console.log('OSADAS')
-          if (data.chat._id === this.currentChat?._id)
-            this.appendMessage(data.message);
-        });
-      }
+      this.setupSocketListeters();
 
       this.chats = data;
     } catch (e) {
@@ -72,6 +68,24 @@ export class ChatsStore implements IChatsStore {
       this.chats.unshift(data);
     } catch (e) {
       console.log(e);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  @action.bound
+  public async addUserToChat(userId: string) {
+    this.isLoading = true;
+
+    try {
+      await ApiService.post("chats/add-user-to-chat", {
+        chatId: this.currentChat?._id,
+        userId,
+      });
+
+      this.error = "";
+    } catch (e) {
+      this.error = "User not found";
     } finally {
       this.isLoading = false;
     }
@@ -132,6 +146,11 @@ export class ChatsStore implements IChatsStore {
   }
 
   @action.bound
+  public clearError() {
+    this.error = "";
+  }
+
+  @action.bound
   private async checkIfExists(userIds: string[]) {
     let exists = false;
     if (userIds.length === 1) {
@@ -139,7 +158,7 @@ export class ChatsStore implements IChatsStore {
         this.chats.map(async (chat) => {
           const { users } = chat;
           console.log(users);
-          if (users.includes(userIds[0])) {
+          if (users.includes(userIds[0]) && users.length < 3) {
             await this.fetchChat(chat._id);
             exists = true;
           }
@@ -152,6 +171,38 @@ export class ChatsStore implements IChatsStore {
 
   @action.bound
   private appendMessage(message: IMessage) {
-    this.currentChat?.messages?.push(message);
+    const exists = this.currentChat?.messages?.find(
+      (it) => it._id === message._id
+    );
+    if (!exists) this.currentChat?.messages?.push(message);
+  }
+
+  private setupSocketListeters() {
+    if (this.root.authStore.user) {
+      SocketService.handleConnection(this.root.authStore.user._id);
+
+      SocketService.on("new-message", (data: any) => {
+        if (data.chat._id === this.currentChat?._id)
+          this.appendMessage(data.message);
+
+        if (this.chats[0]._id !== data.chat._id) {
+          this.chats = this.chats.filter((it) => it._id !== data.chat._id);
+          this.chats.unshift(data.chat);
+        }
+      });
+
+      SocketService.on("user-added", (data: any) => {
+        const { chat } = data.payload;
+
+        if (this.currentChat && chat._id === this.currentChat._id) {
+          this.currentChat.users = chat.users;
+          this.currentChat.title = chat.title;
+          return;
+        }
+
+        this.chats = this.chats.filter((it) => it._id !== chat._id);
+        this.chats.unshift(chat);
+      });
+    }
   }
 }

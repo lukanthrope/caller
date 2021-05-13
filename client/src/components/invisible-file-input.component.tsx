@@ -21,6 +21,7 @@ class Wrapped extends React.Component<IProps & IRefProps> {
         type="file"
         style={{ display: "none" }}
         ref={this.props.innerRef}
+        accept="image/*"
       />
     );
   }

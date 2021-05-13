@@ -1,6 +1,7 @@
 import { action, observable } from "mobx";
 import ApiService from "../../services/api";
 import AuthService from "../../services/auth";
+import SocketService from '../../services/ws.service';
 import { IUser } from "../../interfaces";
 import { IAuthStore, ISigninPayload, ISignupPayload } from "./types";
 import { Store } from "rc-field-form/lib/interface";
@@ -70,7 +71,9 @@ export class AuthStore implements IAuthStore {
     this.isLoading = true;
     this.user = null;
     AuthService.deleteUser();
+    SocketService.disconnect();
     this.root.chatsStore.clearStore();
     this.isLoading = false;
+
   }
 }

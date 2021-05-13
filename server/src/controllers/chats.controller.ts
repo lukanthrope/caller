@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { CreateMessageDTO } from 'src/dto';
+import { AddUserToChatDTO, CreateMessageDTO } from 'src/dto';
 import { AuthGuard } from 'src/guards';
 import { ChatsService } from 'src/services';
 import { FileUtils } from 'src/utils';
@@ -23,22 +23,27 @@ export class ChatsController {
 
   @Get()
   public async getChats(@Query('userId') userId) {
-    return this.chatsService.getChatList(userId)
+    return this.chatsService.getChatList(userId);
   }
 
   @Post('create')
   public async createChat(@Body() dto: { userIds: string[] }) {
-    return this.chatsService.create(dto.userIds)
+    return this.chatsService.create(dto.userIds);
+  }
+
+  @Post('add-user-to-chat')
+  public async addUserToChat(@Body() dto: AddUserToChatDTO) {
+    return this.chatsService.addUserToChat(dto.chatId, dto.userId);
   }
 
   @Get(':chatId')
   public async getChat(@Param() params) {
-    return this.chatsService.getChat(params.chatId)
+    return this.chatsService.getChat(params.chatId);
   }
 
   @Post('send-message')
   public async sendMessage(@Body() dto: CreateMessageDTO) {
-    return this.chatsService.sendMessage(dto)
+    return this.chatsService.sendMessage(dto);
   }
 
   @Post('send-image-message')
@@ -51,7 +56,10 @@ export class ChatsController {
       fileFilter: FileUtils.imageFileFilter,
     }),
   )
-  public async sendImageMessage(@Query() dto: CreateMessageDTO, @UploadedFile() file) {
-    return this.chatsService.sendMessage({ ...dto, content: file.filename })
+  public async sendImageMessage(
+    @Query() dto: CreateMessageDTO,
+    @UploadedFile() file,
+  ) {
+    return this.chatsService.sendMessage({ ...dto, content: file.filename });
   }
 }

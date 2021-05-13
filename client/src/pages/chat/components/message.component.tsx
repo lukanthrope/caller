@@ -7,17 +7,9 @@ import {
 import { IMessage } from "../../../interfaces";
 import { EMessageType } from "../../../enums";
 
-interface IProps {
-  message: IMessage;
-  isMe: boolean;
-}
+export class MessageComponent {
 
-export class MessageComponent extends React.Component<IProps> {
-  constructor(props: IProps) {
-    super(props);
-  }
-
-  static renderMessageFooter = (message: IMessage, isMe = false) => {
+  static RenderMessageFooter = (message: IMessage, isMe = false) => {
     return (
       <>
         {!isMe && <Avatar src="https://picsum.photos/200" name="Joe" />}
@@ -29,8 +21,7 @@ export class MessageComponent extends React.Component<IProps> {
     );
   };
 
-  render(): JSX.Element {
-    const { message, isMe } = this.props;
+  static Render(message: IMessage, isMe: boolean): JSX.Element {
 
     if (message.type === EMessageType.Image) {
       return (
@@ -44,7 +35,7 @@ export class MessageComponent extends React.Component<IProps> {
           }}
         >
           <Message.ImageContent src={`http://localhost:5000/${message.content}`} alt="pic" width={200} />
-          {MessageComponent.renderMessageFooter(message, isMe)}
+          {MessageComponent.RenderMessageFooter(message, isMe)}
         </Message>
       );
     }
@@ -59,7 +50,7 @@ export class MessageComponent extends React.Component<IProps> {
           direction: !isMe ? "outgoing" : null,
         }}
       >
-        {MessageComponent.renderMessageFooter(message, isMe)}
+        {MessageComponent.RenderMessageFooter(message, isMe)}
       </Message>
     );
   }

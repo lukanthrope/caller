@@ -35,6 +35,35 @@ export class ChatsService {
     return chat;
   }
 
+  public async addUserToChat(chatId: string, userId: string) {
+    const chat = await this.chatModel.findOne({ _id: chatId });
+
+    // @ts-ignore
+    if (!chat || chat.users.includes(userId))
+      throw new BadRequestException({
+        message: 'User already exists in this chat or chat no fount',
+      });
+
+    const newUser = await this.userModel.findOne({ _id: userId });
+
+    if (!newUser)
+      throw new BadRequestException({
+        message: 'No users with this ID',
+      });
+
+    // @ts-ignore
+    const title: string = chat.users
+      .reduce((acc, curr) => `${acc} ${curr}`, '');
+
+    await this.chatModel.updateOne(
+      { _id: chatId },
+      { users: [...chat.users, newUser], title },
+    );
+    const res = await this.chatModel.findOne({ _id: chatId });
+
+    this.eventEmmiter.emit(EEventTypes.UserAdded, { chat: res });
+  }
+
   public async getChatList(userId: string) {
     // @ts-ignore
     const chats = await this.chatModel.find({ users: userId });
@@ -46,7 +75,7 @@ export class ChatsService {
     const message = await this.messageModel.create(m);
     const chat = await this.getChat(m.chatId);
 
-    console.log(chat)
+    console.log(chat);
 
     this.eventEmmiter.emit(EEventTypes.MessageCreated, { chat, message });
 
