@@ -51,6 +51,7 @@ export class AppGateway
 
   @SubscribeMessage('call-user')
   handleCallMade(client: Socket, payload: any) {
+    this.logger.log(payload)
     this.server.to(`user-${payload.to}`).emit('call-made', {
       offer: payload.offer,
       userId: payload.from,
@@ -59,8 +60,9 @@ export class AppGateway
 
   @SubscribeMessage('make-answer')
   handleAnswerMade(client: Socket, payload: any) {
+    this.logger.log(payload)
     this.server.to(`user-${payload.to}`).emit('answer-made', {
-      offer: payload.answer,
+      answer: payload.answer,
       userId: payload.from,
     });
   }
@@ -68,9 +70,14 @@ export class AppGateway
   @SubscribeMessage('reject-call')
   handleRejectCall(client: Socket, payload: any) {
     this.server.to(`user-${payload.to}`).emit('call-rejected', {
-      offer: payload.answer,
       userId: payload.from,
     });
+  }
+
+  @SubscribeMessage('call-end')
+  handleEndCall(client: Socket, payload: any) {
+    this.logger.log(payload)
+    this.server.to(`user-${payload.to}`).emit('call-ended');
   }
 
   afterInit(server: Server) {

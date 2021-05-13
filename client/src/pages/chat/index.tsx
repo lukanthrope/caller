@@ -27,6 +27,8 @@ import { IChatsStore } from "../../store/chats";
 import { IChat } from "../../interfaces";
 import { InvisibleFileInput } from "../../components";
 import { EMessageType } from "../../enums";
+import { Call } from './components';
+import WebRTCService from "../../services/webRTC.service";
 
 interface IProps {
   authStore?: IAuthStore;
@@ -46,8 +48,16 @@ export class Chat extends React.Component<IProps> {
 
   private fileRef: any = React.createRef();
 
+  private webRtcService;
+
+  constructor(props: IProps) {
+    super(props);
+    this.webRtcService = new WebRTCService();
+  }
+
   public componentDidMount() {
     this.props.chatsStore?.fetchChats();
+    this.webRtcService.configureEvents();
   }
 
   private handleSearch = (value: string) => {
@@ -168,7 +178,7 @@ export class Chat extends React.Component<IProps> {
           {this.renderChatAvatar(currentChat, user)}
           <ConversationHeader.Content userName={currentChat.title || this.getNotMe(currentChat)} />
           <ConversationHeader.Actions>
-            <VideoCallButton />
+            <VideoCallButton onClick={() => this.webRtcService.callUser(user)} />
             <AddUserButton onClick={this.handleAddUser} />
           </ConversationHeader.Actions>
         </ConversationHeader>
@@ -184,7 +194,7 @@ export class Chat extends React.Component<IProps> {
 
     if (chatsStore?.currentChat)
       return (
-        <ChatContainer>
+        <ChatContainer style={{ minWidth: window.screen.width > 700 ? '340px': '90%' }}>
           {this.renderChatHeader()}
           <MessageList>
             {chatsStore?.currentChat?.messages?.map((message) => (
@@ -221,15 +231,15 @@ export class Chat extends React.Component<IProps> {
   }
 
   public render(): JSX.Element {
-    const { authStore } = this.props;
+    const { authStore, chatsStore } = this.props;
     return (
-      <div style={{ position: "relative", height: "550px" }}>
+      <div>
         <InvisibleFileInput
           handleChange={this.handleSendImageMessage}
           ref={this.fileRef}
         />
-        <MainContainer>
-          <Sidebar position="left">
+        <MainContainer style={ { height: '90vh' } }>
+          <Sidebar position="left" style={{ minWidth: chatsStore?.currentChat || window.screen.width > 700 ? '250px' : '100%' }}>
             <ConversationHeader>
               <Avatar src="https://picsum.photos/200/" name="client" />
               <ConversationHeader.Content userName={authStore?.user?._id} />
@@ -246,6 +256,7 @@ export class Chat extends React.Component<IProps> {
             {this.renderSideBarItems()}
           </Sidebar>
           {this.renderChatBody()}
+          <Call endCall={() => this.webRtcService.endCall()} />
         </MainContainer>
       </div>
     );
