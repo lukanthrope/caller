@@ -23,7 +23,8 @@ export class ChatsService {
       userIds.map(async (_id) => this.userModel.findOne({ _id })),
     );
 
-    return this.chatModel.create({ users });
+    const chat = await this.chatModel.create({ users });
+    return this.getChat(chat._id);
   }
 
   public async getChat(chatId: string) {

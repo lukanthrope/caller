@@ -40,6 +40,7 @@ export class ChatsStore implements IChatsStore {
       if (this.root.authStore.user) {
         SocketService.handleConnection(this.root.authStore.user._id);
         SocketService.on("new-message", (data: any) => {
+          console.log('OSADAS')
           if (data.chat._id === this.currentChat?._id)
             this.appendMessage(data.message);
         });

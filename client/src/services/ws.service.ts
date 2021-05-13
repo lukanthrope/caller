@@ -9,10 +9,10 @@ class WsService {
 
   private init() {
     if (this.socket) this.socket.close();
-    this.socket = IO("http://localhost", {
+    this.socket = IO("http://localhost:8080", {
       transports: ["websocket"],
       upgrade: false,
-    });
+    })
   }
 
   public handleConnection(clientId: string) {

@@ -12,7 +12,7 @@ import { IChat, IMessage } from './interfaces';
 import { OnEvent } from '@nestjs/event-emitter';
 import { EEventTypes } from './enums';
 
-@WebSocketGateway(80)
+@WebSocketGateway(8080)
 export class AppGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
@@ -21,7 +21,7 @@ export class AppGateway
   @OnEvent(EEventTypes.MessageCreated)
   handleMessage(payload: { chat: IChat; message: IMessage }): void {
     payload.chat.users.map((user) => {
-      console.log(user);
+      console.log(user, '-RT');
       this.server.to(`user-${user}`).emit('new-message', payload);
     });
   }

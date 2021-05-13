@@ -10,10 +10,10 @@ async function bootstrap() {
     credentials: true,
   };
 
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
 
   app.use(cors(corsOptions))
-  // app.useWebSocketAdapter(new WsAdapter(app));
+  app.enableCors()
 
   await app.listen(5000);
 }
