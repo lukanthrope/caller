@@ -22,8 +22,9 @@ class WsService {
   }
 
   public handleConnection(clientId: string) {
+    this.init();
     this.on("connect", () => {
-      alert('Connected')
+      alert('Connected');
       this.emit("client-connection", clientId);
     });
   }

@@ -48,7 +48,7 @@ export class Chat extends React.Component<IProps> {
 
   private fileRef: any = React.createRef();
 
-  private webRtcService;
+  private webRtcService?;
 
   constructor(props: IProps) {
     super(props);
@@ -57,7 +57,7 @@ export class Chat extends React.Component<IProps> {
 
   public componentDidMount() {
     this.props.chatsStore?.fetchChats();
-    this.webRtcService.configureEvents();
+    this.webRtcService?.configureEvents();
   }
 
   private handleSearch = (value: string) => {
@@ -178,10 +178,10 @@ export class Chat extends React.Component<IProps> {
           {this.renderChatAvatar(currentChat, user)}
           <ConversationHeader.Content
             userName={currentChat.title || this.getNotMe(currentChat)}
-            onClick={() => currentChat.users.length > 2 ? alert("Members: " + currentChat.users.join(' ')) : null} 
+            onClick={() => currentChat.users.length > 2 ? alert("Chat" + currentChat.users.join(' ')) : null} 
           />
           <ConversationHeader.Actions>
-            { currentChat.users.length < 3 && <VideoCallButton onClick={() => this.webRtcService.callUser(user)} />}
+          <VideoCallButton onClick={() => this.webRtcService!.callUser(user)} />
             <AddUserButton onClick={this.handleAddUser} />
           </ConversationHeader.Actions>
         </ConversationHeader>
@@ -197,7 +197,7 @@ export class Chat extends React.Component<IProps> {
 
     if (chatsStore?.currentChat)
       return (
-        <ChatContainer style={{ minWidth: window.screen.width > 700 ? '340px': '90%' }}>
+        <ChatContainer style={{ minWidth: window.screen.width > 700 ? '370px': '90%' }}>
           {this.renderChatHeader()}
           <MessageList>
             {chatsStore?.currentChat?.messages?.map((message) => (
@@ -241,6 +241,7 @@ export class Chat extends React.Component<IProps> {
           handleChange={this.handleSendImageMessage}
           ref={this.fileRef}
         />
+        <Call endCall={() => this.webRtcService?.endCall()} />
         <MainContainer style={ { height: '90vh' } }>
           <Sidebar position="left" style={{ minWidth: chatsStore?.currentChat || window.screen.width > 700 ? '250px' : '100%' }}>
             <ConversationHeader>
@@ -259,7 +260,6 @@ export class Chat extends React.Component<IProps> {
             {this.renderSideBarItems()}
           </Sidebar>
           {this.renderChatBody()}
-          <Call endCall={() => this.webRtcService.endCall()} />
         </MainContainer>
       </div>
     );

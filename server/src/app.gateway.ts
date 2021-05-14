@@ -74,7 +74,7 @@ export class AppGateway
     });
   }
 
-  @SubscribeMessage('call-end')
+  @SubscribeMessage('end-call')
   handleEndCall(client: Socket, payload: any) {
     this.logger.log(payload)
     this.server.to(`user-${payload.to}`).emit('call-ended');
