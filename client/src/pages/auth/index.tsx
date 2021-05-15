@@ -44,7 +44,7 @@ export class Auth extends React.Component<IProps> {
     const { isLogin } = this;
     const { authStore } = this.props;
     return (
-      <Layout>
+      <Layout style={{ display: 'flex', height: '100vh' , padding: '0 20px', justifyContent: 'center'}}>
         <Form
           ref={this.formRef}
           name="control-ref"
